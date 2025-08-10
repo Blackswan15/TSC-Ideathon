@@ -154,11 +154,10 @@ body {
     animation: float 3s ease-in-out infinite;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
-
-.icon-1 { top: 10%; left: 20%; animation-delay: 0s; }
-.icon-2 { top: 20%; right: 10%; animation-delay: 1s; }
-.icon-3 { bottom: 30%; left: 10%; animation-delay: 2s; }
-.icon-4 { bottom: 25%; right: 10%; animation-delay: 0.5s; }
+.icon-1 { top: 25%; left: 15%; animation-delay: 0s; }    /* Final Position */
+.icon-2 { top: 35%; right: 10%; animation-delay: 1s; }   /* Final Position */
+.icon-3 { bottom: 40%; left: 15%; animation-delay: 2s; }   /* Final Position */
+.icon-4 { bottom: 25%; right: 11%; animation-delay: 0.5s; } /* Final Position */
 
 @keyframes float {
     0%, 100% { transform: translateY(0) rotate(0deg); }
