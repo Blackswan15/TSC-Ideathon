@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Interests</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex items-center justify-center h-screen px-4">
+    <div class="w-full max-w-2xl p-8 space-y-6 bg-white rounded-lg shadow-xl text-center">
+        <h2 class="text-2xl font-bold text-gray-900">CHOOSE ANY 3 AREAS OF INTERESTS</h2>
+        <div id="interests-container" class="grid grid-cols-2 sm:grid-cols-3 gap-4 py-4">
+            <button class="interest-btn p-4 border rounded-lg">CODING</button>
+            <button class="interest-btn p-4 border rounded-lg">GAMING</button>
+            <button class="interest-btn p-4 border rounded-lg">DANCE</button>
+            <button class="interest-btn p-4 border rounded-lg">MUSIC</button>
+            <button class="interest-btn p-4 border rounded-lg">BEAUTY</button>
+            <button class="interest-btn p-4 border rounded-lg">SPORTS</button>
+        </div>
+        <p id="message" class="text-red-500 h-4"></p>
+        <button id="submit-interests" disabled class="w-full sm:w-1/2 mx-auto px-4 py-2 text-sm font-medium text-white bg-indigo-400 border border-transparent rounded-md shadow-sm cursor-not-allowed">Continue</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

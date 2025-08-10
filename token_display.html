@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Recovery Token</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="flex items-center justify-center h-screen px-4">
+    <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-xl text-center">
+        <!-- Content is the same as before, but the body tag ensures the background is applied -->
+        <h2 class="text-2xl font-bold text-gray-900">Registration Successful!</h2>
+        <div class="p-4 my-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 warning-box rounded-r-lg">
+             <h3 class="font-bold">ACTION REQUIRED</h3>
+             <p class="text-left mt-2">This is your only chance to save your recovery token. <strong>If you lose this token, you will lose access to your account permanently.</strong></p>
+        </div>
+        <p class="text-gray-700">Your recovery token is:</p>
+        <div class="p-4 my-2 bg-gray-200 rounded-md">
+            <p id="token-display" class="text-lg font-mono break-all"></p>
+        </div>
+        <div class="flex items-center justify-center pt-4">
+            <input id="terms-checkbox" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+            <label for="terms-checkbox" class="ml-2 block text-sm text-gray-900">I have saved my token and agree to the terms.</label>
+        </div>
+        <button id="proceed-to-login" disabled class="w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-indigo-300 border border-transparent rounded-md shadow-sm cursor-not-allowed">Proceed to Login</button>
+    </div>
+    <script>
+        // This inline script remains the same
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = new URLSearchParams(window.location.search).get('token');
+            document.getElementById('token-display').textContent = token;
+            const checkbox = document.getElementById('terms-checkbox');
+            const proceedButton = document.getElementById('proceed-to-login');
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    proceedButton.disabled = false;
+                    proceedButton.classList.remove('bg-indigo-300', 'cursor-not-allowed');
+                    proceedButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                } else {
+                    proceedButton.disabled = true;
+                    proceedButton.classList.add('bg-indigo-300', 'cursor-not-allowed');
+                    proceedButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                }
+            });
+            proceedButton.addEventListener('click', () => {
+                if (!checkbox.checked) return;
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

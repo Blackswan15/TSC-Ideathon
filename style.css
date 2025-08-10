@@ -1,0 +1,263 @@
+/* style.css */
+/* This file contains all custom styles for the application,
+   including the final redesigned dashboard. */
+
+/* --- Global & Login/Register Page Styles --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #4c1d95;
+    background-image: linear-gradient(160deg, #371a6e 0%, #6d28d9 100%);
+    min-height: 100vh;
+    margin: 0;
+    transition: background-color 0.3s ease;
+}
+
+/* --- Dashboard Specific Body Styles --- */
+body.dashboard-light {
+    background-color: #f3f4f6;
+    background-image: none;
+}
+body.dashboard-dark {
+    background: linear-gradient(135deg, #1a0d3d 0%, #2d1b69 50%, #5b21b6 100%);
+}
+
+/* --- Dashboard Layout --- */
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* --- Header V2 --- */
+.main-header-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #111827;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.header-icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #4b5563;
+    cursor: pointer;
+    position: relative;
+}
+.notification-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+}
+
+/* --- Dark Mode Switch --- */
+.dark-mode-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+.dark-mode-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 28px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #4f46e5;
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* --- Navigation Bar V2 --- */
+.main-nav-v2 {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.nav-link-v2 {
+    text-decoration: none;
+    color: #374151;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+.nav-link-v2:hover {
+    background-color: #eef2ff;
+}
+.nav-link-v2.active {
+    background-color: #4f46e5;
+    color: #ffffff;
+}
+
+/* --- Main Content V2 --- */
+.dashboard-main {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+.content-box {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.welcome-text {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #111827;
+}
+.points-text {
+    font-size: 1.125rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+}
+.interests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.interests-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+.action-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+.edit-btn { color: #3b82f6; border-color: #3b82f6; }
+.save-btn { color: #16a34a; border-color: #16a34a; }
+.hidden { display: none; }
+
+.interests-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.interest-pill {
+    background-color: #eef2ff;
+    color: #4338ca;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+.interest-btn-edit {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+.interest-btn-edit.selected {
+    border-color: #4f46e5;
+    background-color: #e0e7ff;
+}
+
+/* --- Dark Mode Styles --- */
+body.dashboard-dark .main-header-v2,
+body.dashboard-dark .main-nav-v2,
+body.dashboard-dark .content-box {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+body.dashboard-dark .header-left,
+body.dashboard-dark .welcome-text,
+body.dashboard-dark .interests-title {
+    color: #ffffff;
+}
+body.dashboard-dark .header-icon-btn,
+body.dashboard-dark .points-text {
+    color: #9ca3af;
+}
+body.dashboard-dark .nav-link-v2 {
+    color: #d1d5db;
+}
+body.dashboard-dark .nav-link-v2:hover {
+    background-color: #374151;
+}
+body.dashboard-dark .nav-link-v2.active {
+    background-color: #4f46e5;
+    color: #ffffff;
+}
+body.dashboard-dark .interest-pill {
+    background-color: #3730a3;
+    color: #e0e7ff;
+}
+body.dashboard-dark .interest-btn-edit {
+    background-color: #374151;
+    color: #d1d5db;
+}
+body.dashboard-dark .interest-btn-edit.selected {
+    border-color: #6d28d9;
+    background-color: #3730a3;
+}
+
+/* --- Form Validation Styles --- */
+.input-wrapper { position: relative; }
+.validation-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0; transition: opacity 0.3s ease-in-out; font-size: 1.2rem; }
+.validation-icon.visible { opacity: 1; }
+.validation-message { font-size: 0.8rem; margin-top: 4px; transition: all 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+.validation-message.visible { max-height: 20px; opacity: 1; }
+.text-success { color: #10b981; }
+.text-error { color: #ef4444; }
+.input-field { transition: border-color 0.3s ease-in-out; }
+.input-invalid { border-color: #ef4444 !important; }
+.input-valid { border-color: #10b981 !important; }
+.interest-btn.bg-indigo-600 { background-color: #4f46e5; }

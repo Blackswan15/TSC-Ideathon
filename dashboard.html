@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Hub - Anonymous Discussion Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .post-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .action-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .points-badge {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        }
+        
+        .edit-mode {
+            background: #f0f9ff;
+            border: 2px dashed #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <nav class="glass-effect border-b border-white/20 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-graduation-cap text-purple-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold text-white">THE SNOOZE CLUB</h1>
+                        <p class="hidden sm:block text-white/70 text-sm">Department of CSE</p>
+                    </div>
+                </div>
+                
+                <div class="flex-1 flex items-center justify-center">
+                    <div class="flex items-center space-x-1 sm:space-x-2">
+                        <button class="nav-item active px-3 sm:px-4 py-2 rounded-xl text-white flex items-center space-x-2" data-tab="home">
+                            <i class="fas fa-home text-lg"></i>
+                            <span class="font-medium hidden lg:inline">HOME</span>
+                        </button>
+                        <button class="nav-item px-3 sm:px-4 py-2 rounded-xl text-white/80 hover:text-white flex items-center space-x-2" data-tab="complaints">
+                            <i class="fas fa-exclamation-triangle text-lg"></i>
+                            <span class="font-medium hidden lg:inline">COMPLAINTS</span>
+                        </button>
+                        <button class="nav-item px-3 sm:px-4 py-2 rounded-xl text-white/80 hover:text-white flex items-center space-x-2" data-tab="discussions">
+                            <i class="fas fa-users text-lg"></i>
+                            <span class="font-medium hidden lg:inline">GROUP DISCUSSIONS</span>
+                        </button>
+                        <button class="nav-item px-3 sm:px-4 py-2 rounded-xl text-white/80 hover:text-white flex items-center space-x-2" data-tab="chat">
+                            <i class="fas fa-comments text-lg"></i>
+                            <span class="font-medium hidden lg:inline">CHAT</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2 bg-green-500/20 px-3 py-2 rounded-lg">
+                        <div class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></div>
+                        <span class="text-white text-sm font-medium hidden md:inline">Anonymous Mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2 sm:space-x-4 flex-wrap gap-2">
+                <button class="action-btn flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl text-white hover:bg-white/30 transition-all">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span class="font-medium hidden sm:inline">Notifications</span>
+                    <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                </button>
+                <button class="action-btn flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl text-white hover:bg-white/30 transition-all" onclick="toggleCreatePost()">
+                    <i class="fas fa-plus text-lg"></i>
+                    <span class="font-medium hidden sm:inline">Create Post</span>
+                </button>
+                <button class="action-btn flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl text-white hover:bg-white/30 transition-all" onclick="toggleChatBot()">
+                    <i class="fas fa-robot text-lg"></i>
+                    <span class="font-medium hidden sm:inline">Chat Bot</span>
+                </button>
+                <button class="action-btn flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl text-white hover:bg-white/30 transition-all">
+                    <i class="fas fa-search text-lg"></i>
+                    <span class="font-medium hidden sm:inline">Search</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-3">
+                <div id="home-tab" class="tab-content">
+                    <div class="mb-8">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Welcome to Student Hub 🎓</h2>
+                        <p class="text-white/80 text-base sm:text-lg">Connect anonymously, share ideas, and collaborate with fellow CS students.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-purple-600 mb-1">247</div>
+                            <div class="text-sm text-gray-600">Active Students</div>
+                        </div>
+                        <div class="card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">89</div>
+                            <div class="text-sm text-gray-600">Discussions Today</div>
+                        </div>
+                        <div class="card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-green-600 mb-1">156</div>
+                            <div class="text-sm text-gray-600">Ideas Shared</div>
+                        </div>
+                        <div class="card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-orange-600 mb-1">34</div>
+                            <div class="text-sm text-gray-600">Questions Answered</div>
+                        </div>
+                    </div>
+
+                    <div id="create-post-section" class="card rounded-2xl p-4 sm:p-6 shadow-lg mb-6 hidden">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-user-secret text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800" id="post-username">ANONYMOUS</h3>
+                                <p class="text-sm text-gray-500">Share your thoughts anonymously</p>
+                            </div>
+                        </div>
+                        <textarea id="post-textarea" class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" rows="3" placeholder="What's on your mind?"></textarea>
+                        <div class="flex flex-col sm:flex-row items-center justify-between mt-4 gap-4 sm:gap-2">
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm hover:bg-purple-200 transition-colors">#general</button>
+                                <button class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm hover:bg-blue-200 transition-colors">#academics</button>
+                                <button class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm hover:bg-green-200 transition-colors">#projects</button>
+                            </div>
+                            <button class="w-full sm:w-auto px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105" onclick="addPost()">
+                                Share Anonymously
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="posts-container" class="space-y-6">
+                        </div>
+                </div>
+
+                <div id="complaints-tab" class="tab-content hidden">
+                    <div class="text-center py-12">
+                        <i class="fas fa-exclamation-triangle text-6xl text-yellow-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white mb-2">Complaints & Suggestions</h3>
+                        <p class="text-white/80">Share your feedback and suggestions anonymously</p>
+                    </div>
+                </div>
+                <div id="discussions-tab" class="tab-content hidden">
+                     <div class="text-center py-12">
+                        <i class="fas fa-users text-6xl text-blue-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white mb-2">Group Discussions</h3>
+                        <p class="text-white/80">Join topic-based group discussions with your peers</p>
+                    </div>
+                </div>
+                <div id="chat-tab" class="tab-content hidden">
+                    <div class="text-center py-12">
+                        <i class="fas fa-comments text-6xl text-green-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold text-white mb-2">Chat</h3>
+                        <p class="text-white/80">Real-time anonymous chat with fellow students</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="space-y-6">
+                    <div class="profile-card card rounded-2xl p-6 shadow-lg">
+                        <div class="text-center mb-4">
+                            <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user-secret text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800" id="profile-greeting">Hello! 👋</h3>
+                            <p class="text-sm text-gray-600">Anonymous Student</p>
+                        </div>
+                        
+                        <div class="points-badge rounded-xl p-4 text-center text-white mb-4">
+                            <div class="text-2xl font-bold" id="credential-points">1,247</div>
+                            <div class="text-sm opacity-90">Credential Points</div>
+                        </div>
+                        
+                        <div class="bg-white/50 rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-semibold text-gray-800">Areas of Interest</h4>
+                                <button onclick="editInterests()" class="text-blue-600 hover:text-blue-800 transition-colors">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                            <div id="interests-display" class="flex flex-wrap gap-2">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="chatbot-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">🤖 Student Assistant</h3>
+                <button onclick="toggleChatBot()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto mb-4">
+                <div class="text-sm text-gray-600">
+                    <p class="mb-2"><strong>Bot:</strong> Hi! I'm here to help you navigate the platform. What would you like to know?</p>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <input type="text" placeholder="Ask me anything..." class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                <button class="px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DYNAMIC DATA LOADING ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('./api/get_user_data.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    const username = data.username || 'ANONYMOUS';
+                    document.getElementById('profile-greeting').textContent = `Hello ${username.toUpperCase()}! 👋`;
+                    document.getElementById('post-username').textContent = username.toUpperCase();
+                    const interestsDisplay = document.getElementById('interests-display');
+                    interestsDisplay.innerHTML = '';
+                    if (data.interests && data.interests.length > 0) {
+                        const interestStyles = [
+                            'bg-purple-100 text-purple-700', 'bg-blue-100 text-blue-700',
+                            'bg-green-100 text-green-700', 'bg-orange-100 text-orange-700',
+                            'bg-pink-100 text-pink-700', 'bg-indigo-100 text-indigo-700'
+                        ];
+                        data.interests.forEach((interest, index) => {
+                            const style = interestStyles[index % interestStyles.length];
+                            const span = document.createElement('span');
+                            span.className = `inline-block px-3 py-1 rounded-full text-sm ${style}`;
+                            span.textContent = interest;
+                            interestsDisplay.appendChild(span);
+                        });
+                    } else {
+                        interestsDisplay.innerHTML = '<p class="text-sm text-gray-500">No interests set.</p>';
+                    }
+                } else {
+                    console.error('Failed to fetch user data:', data.message);
+                    document.getElementById('profile-greeting').textContent = `Hello GUEST! 👋`;
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                document.getElementById('profile-greeting').textContent = `Hello GUEST! 👋`;
+            }
+        });
+
+        // --- INTEREST EDITING ---
+        function editInterests() {
+            window.location.href = './interests.html';
+        }
+
+        // --- TAB FUNCTIONALITY ---
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                tabContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(tabName + '-tab').classList.remove('hidden');
+            });
+        });
+
+        // --- MODAL & POST TOGGLES ---
+        function toggleCreatePost() {
+            document.getElementById('create-post-section').classList.toggle('hidden');
+        }
+        function toggleChatBot() {
+            document.getElementById('chatbot-modal').classList.toggle('hidden');
+        }
+
+        // --- ADD POST FUNCTIONALITY ---
+        function addPost() {
+            const textarea = document.getElementById('post-textarea');
+            const postText = textarea.value.trim();
+            if (postText === '') return;
+            
+            const postsContainer = document.getElementById('posts-container');
+            const newPost = document.createElement('div');
+            newPost.className = 'post-card card rounded-2xl p-6 shadow-lg animate-fade-in';
+            const postUsername = document.getElementById('post-username').textContent;
+            
+            newPost.innerHTML = `
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user-secret text-white"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <h4 class="font-semibold text-gray-800">${postUsername}</h4>
+                            <span class="text-sm text-gray-500">Just now</span>
+                        </div>
+                        <p class="text-gray-700 mb-4 break-words">${postText}</p>
+                        <div class="flex items-center space-x-6">
+                            <button class="flex items-center space-x-2 text-gray-500 hover:text-purple-600 transition-colors">
+                                <i class="fas fa-heart"></i><span>0</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors">
+                                <i class="fas fa-comment"></i><span>0</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            postsContainer.insertBefore(newPost, postsContainer.firstChild);
+            textarea.value = '';
+            toggleCreatePost();
+        }
+    </script>
+</body>
+</html>

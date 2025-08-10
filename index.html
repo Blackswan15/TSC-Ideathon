@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheSnoozeClub - Introverts Can Express</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#home">
+                <img src="images/tsc_logo-removebg-preview.png" alt="" style="width: 75%; height:55%;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#products">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#plans">Workflow</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-section">
+        <div class="purple-gradient-bar"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                    <h6 class="hero-title">INTROVERT'S<br>ARENA</h6>
+                    <p class="hero-subtitle">UNTANGLE THE TRAUMA WITH US</p>
+                    <a href="login.html" class="btn btn-primary btn-lg connect-btn">
+                        CONNECT HERE
+                    </a>
+                </div>
+               <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                <div class="hero-character">
+                    <div class="character-container">
+                        <div class="character-avatar">
+                            <img src="images/think_man.png" alt="Character">   
+                        </div>
+                        <div class="floating-icons">
+                            <div class="icon icon-1">😴</div>
+                            <div class="icon icon-2">💭</div>
+                            <div class="icon icon-3">💡</div>
+                            <div class="icon icon-4">❤️</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5" data-aos="fade-up">THINGS MADE SIMPLER</h2>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-card h-100">
+                        <div class="product-image internet-plans">
+                            <img src="images/settings-removebg-preview.png" alt="">
+                        </div>
+                        <div class="product-content">
+                            <h3>HOW IT WORKS</h3>
+                            <button class="btn btn-outline-light" onclick="scrollToSection('plans')">FIND OUT MORE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-card h-100">
+                        <div class="product-image accessories">
+                            <img src="images/Screenshot_2025-07-26_170453-removebg-preview (1).png" alt="">
+                        </div>
+                        <div class="product-content">
+                            <h3>FAQ'S</h3>
+                            <button class="btn btn-outline-light" onclick="scrollToSection('faqs')">FIND OUT MORE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-card h-100">
+                        <div class="product-image bundles">
+                            <img src="images/abt-removebg-preview.png" alt="">
+                        </div>
+                        <div class="product-content">
+                            <h3>ABOUT US</h3>
+                            <button class="btn btn-outline-light" onclick="scrollToSection('about')">FIND OUT MORE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="plans" class="plans-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="section-title mb-4">HOW<br>IT WORKS</h2>
+                    
+                    <div class="plan-item mb-4">
+                        <h4 class="plan-title">SUBMIT REPORT</h4>
+                        <p class="plan-description">Fill out the anonymous form comfortably and share your incident or suggestion.</p>
+                    </div>
+                    
+                    <div class="plan-item mb-4">
+                        <h4 class="plan-title">GET TRACKING ID</h4>
+                        <p class="plan-description">Receive a unique tracking ID to monitor the status of your report.</p>
+                    </div>
+                    
+                    <div class="plan-item mb-4">
+                        <h4 class="plan-title">TRACK PROGRESS</h4>
+                        <p class="plan-description">Check the status of your report anytime using your tracking ID.</p>
+                    </div>
+                    <div class="plan-item mb-4">
+                        <h4 class="plan-title">RESOLUTIONS</h4>
+                        <p class="plan-description">Get updates as your report is gently reviewed and resolved with care by the team.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <div class="plans-image">
+                        <img src="images/Working remotely.gif" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="faqs" class="faqs-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5" data-aos="fade-up">FAQS</h2>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="faq-item">
+                        <div class="faq-icon">🐼</div>
+                        <h5> What is SnoozeClub and how is it useful?</h5>
+                        <p>SnoozeClub is a calming, cartoon-themed space within the platform where users can relax, chat with the AI, and emotionally decompress at any time.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="faq-item">
+                        <div class="faq-icon">❓</div>
+                        <h5>How does anonymity work on this platform?</h5>
+                        <p>Anonymity is ensured by assigning a Unique Tracking ID to each complaint, hiding the user’s identity from admins unless a justified and authorized reveal is required.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="faq-item">
+                        <div class="faq-icon">🔧</div>
+                        <h5>Who handles the complaints?</h5>
+                        <p>A dedicated panel of verified administrators and mental health personnel manage complaints while strictly adhering to privacy and ethical guidelines.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="faq-item">
+                        <div class="faq-icon">🤖</div>
+                        <h5> How does the AI understand my emotions?</h5>
+                        <p>The AI uses natural language processing and sentiment detection to assess emotional tone, enabling it to respond with supportive and appropriate messages.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="faq-item">
+                        <div class="faq-icon">🧑‍💻</div>
+                        <h5> Can someone trace my identity through my complaint?</h5>
+                        <p>No identity is exposed unless personal details are deliberately included in the message or unless an authorized escalation mandates it.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="faq-item">
+                        <div class="faq-icon">⭐</div>
+                        <h5>Is it mandatory to provide evidence?</h5>
+                        <p>While not mandatory, providing clear and relevant evidence can greatly help in processing your complaint more effectively and ensuring appropriate action is taken.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="section-title mb-4">ABOUT US</h2>
+                    <p class="about-text">
+                        SnoozeClub is a gentle space where voices matter—whether it's a whisper of worry or a spark of suggestion. Built with care, we blend tech and empathy to create an anonymous platform where introverted students can share complaints, feedback, or emotions safely.
+                    </p>
+                    <p class="about-text">
+                        With a comforting cartoon-inspired interface and a supportive AI companion, SnoozeClub offers a warm, judgment-free zone where your thoughts are heard, tracked, and gently guided toward resolution. Because healing starts with feeling heard.
+                    </p>
+                    <div class="about-buttons">
+                        <button class="btn btn-primary me-3" onclick="scrollToSection('contact')">CONTACT US</button>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <div class="about-image">
+                        <img src="images/Business Plan.gif" alt="About Us">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bundles" class="bundles-section py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5" data-aos="fade-up">MEET OUR TEAM</h2>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bundle-card">
+                        <div class="bundle-image starter-package">
+                            <img src="images/photo-removebg-preview.png" alt="ABISHEK C R">
+                        </div>
+                        <div class="bundle-content">
+                            <h4>ABISHEK C R</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bundle-card">
+                        <div class="bundle-image starter-package">
+                            <img src="images/bhavana_tsc-removebg-preview.png" alt="">
+                        </div>
+                        <div class="bundle-content">
+                            <h4>BHAVANA SB</h4>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bundle-card">
+                        <div class="bundle-image starter-package">
+                            <img src="images/nirmal-removebg-preview.png" alt="">
+                        </div>
+                        <div class="bundle-content">
+                            <h4>NIRMALRAJ C</h4>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="contact" class="contact-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="contact-content">
+                        <div class="contact-logo mb-4">
+                            <img src="images/tsc_logo-removebg-preview.png" alt="" style="width: 75%; height:55%;">
+                        </div>
+                        <h2 class="contact-title">CONNECT WITH<br>THE CREATORS</h2>
+                        <p class="contact-subtitle">LET'S GET STARTED</p>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <div class="contact-info"><br><br>
+                        <div class="contact-item mb-4">
+                            <h6>SOCIAL</h6>
+                            <div class="social-links">
+                               <a href="https://www.instagram.com/__blackswan15__/" class="social-link"><i class="fab fa-instagram"></i></a><br>
+                                <a href="https://www.instagram.com/bhavana._sb/" class="social-link"><i class="fab fa-instagram"></i></a><br>
+                                <a href="https://www.instagram.com/i_nirmalraj_c/" class="social-link"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <script src="script1.js"></script>
+</body>
+</html>
