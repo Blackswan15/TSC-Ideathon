@@ -53,6 +53,11 @@
             background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             border-left: 4px solid #667eea;
         }
+
+        .complaint-card {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%);
+            border-left: 4px solid #ef4444;
+        }
         
         .animate-fade-in {
             animation: fadeIn 0.5s ease-in;
@@ -87,10 +92,34 @@
         .points-badge {
             background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
         }
-        
-        .edit-mode {
-            background: #f0f9ff;
-            border: 2px dashed #3b82f6;
+
+        #posts-container {
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        #chat-user-list {
+            max-height: calc(70vh - 120px);
+             overflow-y: auto;
+        }
+        #private-messages-container, #chat-messages {
+             overflow-y: auto;
+             padding-right: 1rem;
+        }
+
+        #posts-container::-webkit-scrollbar, #chat-messages::-webkit-scrollbar, #chat-user-list::-webkit-scrollbar, #private-messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #posts-container::-webkit-scrollbar-track, #chat-messages::-webkit-scrollbar-track, #chat-user-list::-webkit-scrollbar-track, #private-messages-container::-webkit-scrollbar-track {
+            background: rgba(230, 230, 230, 0.5);
+            border-radius: 10px;
+        }
+        #posts-container::-webkit-scrollbar-thumb, #chat-messages::-webkit-scrollbar-thumb, #chat-user-list::-webkit-scrollbar-thumb, #private-messages-container::-webkit-scrollbar-thumb {
+            background: rgba(128, 128, 128, 0.5);
+            border-radius: 10px;
+        }
+        #posts-container::-webkit-scrollbar-thumb:hover, #chat-messages::-webkit-scrollbar-thumb:hover, #chat-user-list::-webkit-scrollbar-thumb:hover, #private-messages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(128, 128, 128, 0.7);
         }
     </style>
 </head>
@@ -155,10 +184,10 @@
                     <i class="fas fa-robot text-lg"></i>
                     <span class="font-medium hidden sm:inline">Chat Bot</span>
                 </button>
-                <button class="action-btn flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl text-white hover:bg-white/30 transition-all">
-                    <i class="fas fa-search text-lg"></i>
-                    <span class="font-medium hidden sm:inline">Search</span>
-                </button>
+                <div class="relative">
+                    <input type="text" id="user-search-input" onkeyup="searchUsers()" placeholder="Search for users..." class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
+                    <div id="user-search-results" class="absolute mt-2 w-full bg-white rounded-lg shadow-lg z-10 hidden"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -168,25 +197,25 @@
             <div class="lg:col-span-3">
                 <div id="home-tab" class="tab-content">
                     <div class="mb-8">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Welcome to Student Hub 🎓</h2>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Welcome to Student Hub 雌</h2>
                         <p class="text-white/80 text-base sm:text-lg">Connect anonymously, share ideas, and collaborate with fellow CS students.</p>
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <div class="card rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-purple-600 mb-1">247</div>
+                            <div id="active-students-stat" class="text-2xl font-bold text-purple-600 mb-1">0</div>
                             <div class="text-sm text-gray-600">Active Students</div>
                         </div>
                         <div class="card rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-blue-600 mb-1">89</div>
+                            <div id="discussions-today-stat" class="text-2xl font-bold text-blue-600 mb-1">0</div>
                             <div class="text-sm text-gray-600">Discussions Today</div>
                         </div>
                         <div class="card rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-green-600 mb-1">156</div>
+                            <div id="ideas-shared-stat" class="text-2xl font-bold text-green-600 mb-1">0</div>
                             <div class="text-sm text-gray-600">Ideas Shared</div>
                         </div>
                         <div class="card rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-orange-600 mb-1">34</div>
+                            <div id="questions-answered-stat" class="text-2xl font-bold text-orange-600 mb-1">0</div>
                             <div class="text-sm text-gray-600">Questions Answered</div>
                         </div>
                     </div>
@@ -219,24 +248,82 @@
                 </div>
 
                 <div id="complaints-tab" class="tab-content hidden">
-                    <div class="text-center py-12">
-                        <i class="fas fa-exclamation-triangle text-6xl text-yellow-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold text-white mb-2">Complaints & Suggestions</h3>
-                        <p class="text-white/80">Share your feedback and suggestions anonymously</p>
+                    <div class="card rounded-2xl p-6 shadow-lg">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <i class="fas fa-exclamation-triangle text-2xl text-yellow-500"></i>
+                            <h3 class="text-2xl font-bold text-gray-800">Complaints & Suggestions</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Your feedback is valuable and helps improve the community. All submissions are completely anonymous.</p>
+                        <form id="complaint-form" onsubmit="addComplaint(event)">
+                            <textarea id="complaint-textarea" class="w-full p-4 border border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" rows="5" placeholder="Please describe your complaint or suggestion in detail..." required></textarea>
+                            <div id="complaint-message" class="text-sm mt-2 h-5"></div>
+                            <div class="flex justify-end mt-2">
+                                <button type="submit" class="px-6 py-2 bg-yellow-500 text-white rounded-xl font-medium hover:bg-yellow-600 transition-all transform hover:scale-105">
+                                    Submit Anonymously
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
                 <div id="discussions-tab" class="tab-content hidden">
-                     <div class="text-center py-12">
-                        <i class="fas fa-users text-6xl text-blue-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold text-white mb-2">Group Discussions</h3>
-                        <p class="text-white/80">Join topic-based group discussions with your peers</p>
+                    <div class="card rounded-2xl shadow-lg h-[70vh] flex flex-col">
+                        <div class="p-4 border-b">
+                            <h3 class="text-xl font-bold text-gray-800 text-center">Group Discussion</h3>
+                        </div>
+                        <div id="chat-messages" class="flex-1 p-4 space-y-4">
+                        </div>
+                        <div id="chat-empty-state" class="flex-1 flex flex-col items-center justify-center text-center text-gray-500 hidden">
+                            <i class="fas fa-users text-5xl mb-4"></i>
+                            <h4 class="text-xl font-semibold">Join the Conversation</h4>
+                            <p>Be the first to start a discussion!</p>
+                        </div>
+                        <div class="p-4 border-t">
+                            <form class="flex space-x-2" onsubmit="sendChatMessage(event)">
+                                <input id="chat-input" type="text" placeholder="Type your message..." class="flex-1 p-3 border rounded-lg" required>
+                                <button type="submit" class="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+                
                 <div id="chat-tab" class="tab-content hidden">
-                    <div class="text-center py-12">
-                        <i class="fas fa-comments text-6xl text-green-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold text-white mb-2">Chat</h3>
-                        <p class="text-white/80">Real-time anonymous chat with fellow students</p>
+                    <div class="card rounded-2xl shadow-lg h-[70vh] flex flex-row overflow-hidden">
+                        <div class="w-1/3 border-r flex flex-col">
+                            <div class="p-4 border-b">
+                                <h3 class="text-xl font-bold text-gray-800">Messages</h3>
+                            </div>
+                            <div class="p-2 border-b">
+                                <input type="text" id="chat-user-search" onkeyup="filterUserList()" placeholder="Search users to chat..." class="w-full p-2 border rounded-lg text-sm">
+                            </div>
+                            <div id="chat-user-list" class="flex-1">
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div id="chat-welcome-screen" class="flex-1 flex flex-col items-center justify-center text-center text-gray-500">
+                                <i class="fas fa-comments text-6xl mb-4"></i>
+                                <h3 class="text-2xl font-bold">Your Messages</h3>
+                                <p>Select a user from the left to start chatting.</p>
+                            </div>
+                            <div id="active-chat-window" class="hidden flex-1 flex flex-col">
+                                <div class="p-4 border-b flex items-center justify-between">
+                                    <h3 id="chat-partner-name" class="text-xl font-bold text-gray-800"></h3>
+                                    <div id="chat-action-buttons"></div>
+                                </div>
+                                <div id="private-messages-container" class="flex-1 p-4 space-y-4">
+                                </div>
+                                <div id="private-chat-form-container" class="p-4 border-t">
+                                    <form class="flex space-x-2" onsubmit="sendPrivateMessage(event)">
+                                        <input id="private-chat-input" type="text" placeholder="Type a message..." class="flex-1 p-3 border rounded-lg" required>
+                                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                            Send
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,12 +335,12 @@
                             <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
                                 <i class="fas fa-user-secret text-white text-2xl"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-800" id="profile-greeting">Hello! 👋</h3>
+                            <h3 class="text-xl font-bold text-gray-800" id="profile-greeting">Hello! 窓</h3>
                             <p class="text-sm text-gray-600">Anonymous Student</p>
                         </div>
                         
                         <div class="points-badge rounded-xl p-4 text-center text-white mb-4">
-                            <div class="text-2xl font-bold" id="credential-points">1,247</div>
+                            <div class="text-2xl font-bold" id="credential-points">0</div>
                             <div class="text-sm opacity-90">Credential Points</div>
                         </div>
                         
@@ -276,7 +363,7 @@
     <div id="chatbot-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-800">🤖 Student Assistant</h3>
+                <h3 class="text-xl font-bold text-gray-800">､Student Assistant</h3>
                 <button onclick="toggleChatBot()" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -296,24 +383,205 @@
     </div>
 
     <script>
-        // --- DYNAMIC DATA LOADING ---
-        document.addEventListener('DOMContentLoaded', async () => {
+        let chatInterval, privateChatInterval;
+        let searchDebounce;
+        let currentPartnerId = null;
+        let currentPartnerUsername = null;
+
+        // --- USER SEARCH FUNCTIONALITY ---
+        async function searchUsers() {
+            clearTimeout(searchDebounce);
+            const input = document.getElementById('user-search-input');
+            const resultsContainer = document.getElementById('user-search-results');
+            const query = input.value.trim();
+
+            if (query.length < 2) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+
+            searchDebounce = setTimeout(async () => {
+                const response = await fetch(`./api/search_users.php?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                resultsContainer.innerHTML = '';
+                if (data.success && data.users.length > 0) {
+                    resultsContainer.classList.remove('hidden');
+                    data.users.forEach(user => {
+                        const userEl = document.createElement('div');
+                        userEl.className = 'p-3 hover:bg-gray-100 cursor-pointer text-gray-800';
+                        userEl.innerHTML = `<p class="font-semibold">${user.username}</p><p class="text-sm text-gray-500">${user.credential_points} points</p>`;
+                        userEl.onclick = () => {
+                            document.querySelector('.nav-item[data-tab="chat"]').click();
+                            setTimeout(() => openChat(user.id, user.username), 100);
+                            resultsContainer.classList.add('hidden');
+                            input.value = '';
+                        };
+                        resultsContainer.appendChild(userEl);
+                    });
+                } else {
+                    resultsContainer.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        // --- PRIVATE CHAT ---
+        async function loadAllUsers() {
+            const response = await fetch('./api/get_all_users.php');
+            const data = await response.json();
+            const userList = document.getElementById('chat-user-list');
+            userList.innerHTML = '';
+            if (data.success && data.users.length > 0) {
+                data.users.forEach(user => {
+                    const userEl = document.createElement('div');
+                    userEl.className = 'p-4 border-b hover:bg-gray-50 cursor-pointer user-list-item';
+                    userEl.setAttribute('data-username', user.username.toLowerCase());
+                    userEl.onclick = () => openChat(user.id, user.username);
+                    userEl.innerHTML = `<h4 class="font-bold text-gray-800">${user.username}</h4>`;
+                    userList.appendChild(userEl);
+                });
+            } else {
+                userList.innerHTML = '<p class="p-4 text-center text-gray-500">No other users found.</p>';
+            }
+        }
+
+        function filterUserList() {
+            const query = document.getElementById('chat-user-search').value.toLowerCase();
+            const users = document.querySelectorAll('.user-list-item');
+            users.forEach(user => {
+                const username = user.getAttribute('data-username');
+                if (username.includes(query)) {
+                    user.classList.remove('hidden');
+                } else {
+                    user.classList.add('hidden');
+                }
+            });
+        }
+
+        async function openChat(partnerId, partnerUsername) {
+            currentPartnerId = partnerId;
+            currentPartnerUsername = partnerUsername;
+            document.getElementById('chat-welcome-screen').classList.add('hidden');
+            document.getElementById('active-chat-window').classList.remove('hidden');
+            document.getElementById('chat-partner-name').textContent = partnerUsername;
+            
+            clearInterval(privateChatInterval);
+            fetchPrivateMessages();
+            privateChatInterval = setInterval(fetchPrivateMessages, 3000);
+        }
+
+        async function fetchPrivateMessages() {
+            if (!currentPartnerId) return;
+            const response = await fetch(`./api/get_private_messages.php?partner_id=${currentPartnerId}`);
+            const data = await response.json();
+            const messagesContainer = document.getElementById('private-messages-container');
+            const chatForm = document.getElementById('private-chat-form-container');
+            const actionButtons = document.getElementById('chat-action-buttons');
+            
+            if(data.success) {
+                const wasScrolledToBottom = messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 1;
+                messagesContainer.innerHTML = ''; // Clear previous messages
+                
+                if (data.is_blocked) {
+                    messagesContainer.innerHTML = `<div class="text-center text-gray-500 p-4">This user is blocked.</div>`;
+                    chatForm.classList.add('hidden');
+                    actionButtons.innerHTML = `<button onclick="unblockUser(${currentPartnerId})" class="px-3 py-1 bg-green-500 text-white text-sm rounded-lg">Unblock</button>`;
+                } else {
+                    chatForm.classList.remove('hidden');
+                    actionButtons.innerHTML = `<button onclick="blockUser(${currentPartnerId})" class="px-3 py-1 bg-red-500 text-white text-sm rounded-lg">Block</button>`;
+                    if (data.messages.length > 0) {
+                        let lastDate = '';
+                        data.messages.forEach(msg => {
+                            const msgDate = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                            if (msgDate !== lastDate) {
+                                messagesContainer.innerHTML += `<div class="text-center text-sm text-gray-500 my-2">${msgDate}</div>`;
+                                lastDate = msgDate;
+                            }
+                            const isCurrentUser = msg.sender_username == data.current_username;
+                            const msgTime = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            messagesContainer.innerHTML += `
+                                <div class="flex ${isCurrentUser ? 'justify-end' : 'justify-start'}">
+                                    <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${isCurrentUser ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800'}">
+                                        <p class="break-words">${msg.message}</p>
+                                        <p class="text-xs text-right mt-1 ${isCurrentUser ? 'text-indigo-200' : 'text-gray-500'}">${msgTime}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        messagesContainer.innerHTML = `<div class="text-center text-gray-500 p-4">No messages yet. Start the conversation!</div>`;
+                    }
+                }
+
+                if (wasScrolledToBottom) {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            }
+        }
+
+        async function sendPrivateMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('private-chat-input');
+            const message = input.value.trim();
+            if(!message || !currentPartnerId) return;
+
+            await fetch('./api/send_private_message.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ receiver_id: currentPartnerId, message })
+            });
+            input.value = '';
+            fetchPrivateMessages();
+        }
+
+        async function blockUser(blockedId) {
+            if (!confirm("Are you sure you want to block this user? You won't be able to send or receive messages from them.")) return;
+            await fetch('./api/block_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blocked_id: blockedId })
+            });
+            fetchPrivateMessages(); // Refresh the chat window to show the blocked state
+        }
+        
+        async function unblockUser(blockedId) {
+            await fetch('./api/unblock_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blocked_id: blockedId })
+            });
+            fetchPrivateMessages(); // Refresh the chat window to re-enable messaging
+        }
+        
+        // --- FETCH AND DISPLAY DASHBOARD STATS ---
+        async function fetchDashboardStats() {
+            try {
+                const response = await fetch('./api/get_dashboard_stats.php');
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('active-students-stat').textContent = data.stats.active_students;
+                    document.getElementById('discussions-today-stat').textContent = data.stats.discussions_today;
+                    document.getElementById('ideas-shared-stat').textContent = data.stats.ideas_shared;
+                    document.getElementById('questions-answered-stat').textContent = data.stats.questions_answered;
+                }
+            } catch (error) {
+                console.error('Error fetching dashboard stats:', error);
+            }
+        }
+        
+        // --- FETCH USER-SPECIFIC DATA ---
+        async function fetchUserData() {
             try {
                 const response = await fetch('./api/get_user_data.php');
                 const data = await response.json();
-
                 if (data.success) {
                     const username = data.username || 'ANONYMOUS';
-                    document.getElementById('profile-greeting').textContent = `Hello ${username.toUpperCase()}! 👋`;
+                    document.getElementById('profile-greeting').textContent = `Hello ${username.toUpperCase()}! 窓`;
                     document.getElementById('post-username').textContent = username.toUpperCase();
+                    document.getElementById('credential-points').textContent = Number(data.credential_points || 0).toLocaleString();
                     const interestsDisplay = document.getElementById('interests-display');
                     interestsDisplay.innerHTML = '';
                     if (data.interests && data.interests.length > 0) {
-                        const interestStyles = [
-                            'bg-purple-100 text-purple-700', 'bg-blue-100 text-blue-700',
-                            'bg-green-100 text-green-700', 'bg-orange-100 text-orange-700',
-                            'bg-pink-100 text-pink-700', 'bg-indigo-100 text-indigo-700'
-                        ];
+                        const interestStyles = ['bg-purple-100 text-purple-700', 'bg-blue-100 text-blue-700', 'bg-green-100 text-green-700', 'bg-orange-100 text-orange-700', 'bg-pink-100 text-pink-700', 'bg-indigo-100 text-indigo-700'];
                         data.interests.forEach((interest, index) => {
                             const style = interestStyles[index % interestStyles.length];
                             const span = document.createElement('span');
@@ -325,21 +593,207 @@
                         interestsDisplay.innerHTML = '<p class="text-sm text-gray-500">No interests set.</p>';
                     }
                 } else {
-                    console.error('Failed to fetch user data:', data.message);
-                    document.getElementById('profile-greeting').textContent = `Hello GUEST! 👋`;
+                    window.location.href = './login.html';
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                document.getElementById('profile-greeting').textContent = `Hello GUEST! 👋`;
             }
-        });
-
-        // --- INTEREST EDITING ---
-        function editInterests() {
-            window.location.href = './interests.html';
         }
 
-        // --- TAB FUNCTIONALITY ---
+        // --- FETCH AND DISPLAY POSTS AND COMMENTS ---
+        async function fetchPosts() {
+            try {
+                const response = await fetch('./api/get_posts.php');
+                const data = await response.json();
+                if (data.success) {
+                    const postsContainer = document.getElementById('posts-container');
+                    postsContainer.innerHTML = '';
+                    data.posts.forEach(item => {
+                        const newPost = document.createElement('div');
+                        const isComplaint = item.is_complaint == 1;
+                        newPost.className = `relative card rounded-2xl p-6 shadow-lg animate-fade-in ${isComplaint ? 'complaint-card' : 'post-card'}`;
+                        
+                        const actionButtons = `
+                            <button class="flex items-center space-x-2 text-gray-500 hover:text-green-600 transition-colors" onclick="voteOnPost(${item.post_id}, 'up')">
+                                <i class="fas fa-thumbs-up"></i><span>${item.upvotes}</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-gray-500 hover:text-red-600 transition-colors" onclick="voteOnPost(${item.post_id}, 'down')">
+                                <i class="fas fa-thumbs-down"></i><span>${item.downvotes}</span>
+                            </button>
+                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors" onclick="toggleComments(${item.post_id})">
+                                <i class="fas fa-comment"></i><span>${item.comment_count}</span>
+                            </button>
+                        `;
+
+                        newPost.innerHTML = `
+                            ${isComplaint ? '<span class="absolute top-4 right-4 bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">COMPLAINT</span>' : ''}
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user-secret text-white"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <h4 class="font-semibold text-gray-800">${item.username}</h4>
+                                            <span class="text-sm text-gray-500">${getTimeAgo(new Date(item.created_at))}</span>
+                                        </div>
+                                        ${!isComplaint ? `<button class="text-gray-400 hover:text-red-500" title="Report this post" onclick="reportPost(${item.post_id})"><i class="fas fa-flag"></i></button>` : ''}
+                                    </div>
+                                    <p class="text-gray-700 mb-4 break-words">${item.content}</p>
+                                    <div class="flex items-center space-x-6">${actionButtons}</div>
+                                    <div id="comments-section-${item.post_id}" class="mt-4 border-t pt-4 hidden"></div>
+                                </div>
+                            </div>
+                        `;
+                        postsContainer.appendChild(newPost);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
+        
+        // --- GROUP CHAT FUNCTIONALITY ---
+        async function fetchChatMessages() {
+            const response = await fetch('./api/get_chat_messages.php');
+            const data = await response.json();
+            const chatMessagesContainer = document.getElementById('chat-messages');
+            const emptyState = document.getElementById('chat-empty-state');
+            
+            if (data.success) {
+                if (data.messages.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    chatMessagesContainer.classList.add('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    chatMessagesContainer.classList.remove('hidden');
+                    
+                    let lastDate = '';
+                    chatMessagesContainer.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        const msgDate = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                        if (msgDate !== lastDate) {
+                            chatMessagesContainer.innerHTML += `<div class="text-center text-sm text-gray-500 my-2">${msgDate}</div>`;
+                            lastDate = msgDate;
+                        }
+
+                        const isCurrentUser = msg.user_id == data.current_user_id;
+                        const msgTime = new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        const msgElement = document.createElement('div');
+                        msgElement.className = `flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`;
+                        msgElement.innerHTML = `
+                            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${isCurrentUser ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800'}">
+                                ${!isCurrentUser ? `<p class="text-xs font-bold text-purple-700">${msg.username}</p>` : ''}
+                                <p>${msg.message}</p>
+                                <p class="text-xs text-right mt-1 ${isCurrentUser ? 'text-purple-200' : 'text-gray-500'}">${msgTime}</p>
+                            </div>
+                        `;
+                        chatMessagesContainer.appendChild(msgElement);
+                    });
+                    chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                }
+            }
+        }
+
+        async function sendChatMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            await fetch('./api/send_chat_message.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            input.value = '';
+            fetchChatMessages();
+        }
+        
+        // --- TOGGLE AND LOAD COMMENTS ---
+        async function toggleComments(postId) {
+            const commentsSection = document.getElementById(`comments-section-${postId}`);
+            if (commentsSection.classList.toggle('hidden')) return;
+
+            if (commentsSection.innerHTML === '') {
+                commentsSection.innerHTML = `<p class="text-sm text-gray-500">Loading comments...</p>`;
+                const response = await fetch(`./api/get_comments.php?post_id=${postId}`);
+                const data = await response.json();
+                commentsSection.innerHTML = '';
+                if (data.success && data.comments.length > 0) {
+                    data.comments.forEach(comment => {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = 'text-sm mb-2 p-2 bg-gray-50 rounded-lg';
+                        commentEl.innerHTML = `<p class="break-words">${comment.comment_content}</p><p class="text-xs text-gray-500 text-right mt-1">- ${comment.username}, ${getTimeAgo(new Date(comment.created_at))}</p>`;
+                        commentsSection.appendChild(commentEl);
+                    });
+                } else {
+                    commentsSection.innerHTML = `<p class="text-sm text-gray-500">No comments yet.</p>`;
+                }
+                commentsSection.innerHTML += `
+                    <form class="flex space-x-2 mt-3" onsubmit="addComment(event, ${postId})">
+                        <input type="text" placeholder="Write a comment..." class="flex-1 p-2 border rounded-lg text-sm" required>
+                        <button type="submit" class="px-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600">Post</button>
+                    </form>
+                `;
+            }
+        }
+        
+        async function addComment(event, postId) {
+            event.preventDefault();
+            const input = event.target.querySelector('input');
+            const commentText = input.value.trim();
+            if(!commentText) return;
+            await fetch('./api/add_comment.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, comment_content: commentText })
+            });
+            input.value = '';
+            const commentsSection = document.getElementById(`comments-section-${postId}`);
+            commentsSection.innerHTML = '';
+            toggleComments(postId);
+            fetchPosts();
+            fetchUserData();
+        }
+        
+        async function reportPost(postId) {
+            const reason = prompt("Please provide a reason for reporting this post:");
+            if(reason && reason.trim() !== "") {
+                await fetch('./api/add_complaint.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ post_id: postId, complaint_content: reason })
+                });
+                alert('Thank you for your feedback. The post has been reported for review.');
+                fetchPosts();
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60; if (interval > 1) return Math.floor(interval) + " minutes ago";
+            return "Just now";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDashboardStats();
+            fetchUserData();
+            fetchPosts();
+            document.addEventListener('click', (e) => {
+                const searchContainer = document.getElementById('user-search-input').parentElement;
+                if (!searchContainer.contains(e.target)) {
+                    document.getElementById('user-search-results').classList.add('hidden');
+                }
+            });
+        });
+
+        function editInterests() { window.location.href = './interests.html'; }
+
         const navItems = document.querySelectorAll('.nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
         navItems.forEach(item => {
@@ -349,54 +803,79 @@
                 this.classList.add('active');
                 tabContents.forEach(content => content.classList.add('hidden'));
                 document.getElementById(tabName + '-tab').classList.remove('hidden');
+
+                clearInterval(chatInterval);
+                clearInterval(privateChatInterval);
+                currentPartnerUsername = null;
+
+                if (tabName === 'discussions') {
+                    fetchChatMessages();
+                    chatInterval = setInterval(fetchChatMessages, 3000);
+                }
+                if (tabName === 'chat') {
+                    loadAllUsers();
+                }
             });
         });
 
-        // --- MODAL & POST TOGGLES ---
-        function toggleCreatePost() {
-            document.getElementById('create-post-section').classList.toggle('hidden');
-        }
-        function toggleChatBot() {
-            document.getElementById('chatbot-modal').classList.toggle('hidden');
-        }
+        function toggleCreatePost() { document.getElementById('create-post-section').classList.toggle('hidden'); }
+        function toggleChatBot() { document.getElementById('chatbot-modal').classList.toggle('hidden'); }
 
-        // --- ADD POST FUNCTIONALITY ---
-        function addPost() {
+        async function addPost() {
             const textarea = document.getElementById('post-textarea');
             const postText = textarea.value.trim();
             if (postText === '') return;
-            
-            const postsContainer = document.getElementById('posts-container');
-            const newPost = document.createElement('div');
-            newPost.className = 'post-card card rounded-2xl p-6 shadow-lg animate-fade-in';
-            const postUsername = document.getElementById('post-username').textContent;
-            
-            newPost.innerHTML = `
-                <div class="flex items-start space-x-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-user-secret text-white"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <h4 class="font-semibold text-gray-800">${postUsername}</h4>
-                            <span class="text-sm text-gray-500">Just now</span>
-                        </div>
-                        <p class="text-gray-700 mb-4 break-words">${postText}</p>
-                        <div class="flex items-center space-x-6">
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-purple-600 transition-colors">
-                                <i class="fas fa-heart"></i><span>0</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors">
-                                <i class="fas fa-comment"></i><span>0</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            postsContainer.insertBefore(newPost, postsContainer.firstChild);
+            await fetch('./api/add_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_content: postText })
+            });
             textarea.value = '';
             toggleCreatePost();
+            fetchPosts();
+            fetchDashboardStats();
+        }
+        
+        async function addComplaint(event) {
+            event.preventDefault();
+            const textarea = document.getElementById('complaint-textarea');
+            const messageDiv = document.getElementById('complaint-message');
+            const complaintText = textarea.value.trim();
+            if (complaintText === '') return;
+            const response = await fetch('./api/add_complaint.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ complaint_content: complaintText })
+            });
+            const result = await response.json();
+            if (result.success) {
+                textarea.value = '';
+                messageDiv.textContent = 'Your complaint has been submitted successfully.';
+                messageDiv.className = 'text-sm mt-2 h-5 text-green-600';
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    document.querySelector('.nav-item[data-tab="home"]').click();
+                    fetchPosts();
+                }, 2000);
+            } else {
+                messageDiv.textContent = 'Failed to submit: ' + result.message;
+                messageDiv.className = 'text-sm mt-2 h-5 text-red-600';
+            }
+        }
+        
+        async function voteOnPost(postId, voteType) {
+            const response = await fetch('./api/vote_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, vote_type: voteType })
+            });
+            const result = await response.json();
+            if (result.success) {
+                fetchPosts();
+                fetchUserData();
+            } else {
+                console.warn('Vote failed:', result.message);
+            }
         }
     </script>
 </body>

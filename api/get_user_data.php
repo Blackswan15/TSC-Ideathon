@@ -14,8 +14,8 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Prepare a statement to get username and interests
-$stmt = $conn->prepare("SELECT username, interests FROM users WHERE id = ?");
+// Prepare a statement to get username, interests, and credential_points
+$stmt = $conn->prepare("SELECT username, interests, credential_points FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -30,7 +30,8 @@ if ($user = $result->fetch_assoc()) {
     echo json_encode([
         'success' => true,
         'username' => $user['username'],
-        'interests' => $interests_array
+        'interests' => $interests_array,
+        'credential_points' => $user['credential_points']
     ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'User not found.']);
