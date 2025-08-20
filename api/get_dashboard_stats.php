@@ -17,22 +17,24 @@ if ($result) {
 }
 
 // Get discussions posted today
-$result = $conn->query("SELECT COUNT(*) as total_discussions FROM posts WHERE post_type = 'discussion' AND DATE(created_at) = CURDATE()");
+// Assuming discussions are posts that are NOT complaints (is_complaint = 0)
+$result = $conn->query("SELECT COUNT(*) as total_discussions FROM posts WHERE is_complaint = 0 AND DATE(created_at) = CURDATE()");
 if ($result) {
     $stats['discussions_today'] = $result->fetch_assoc()['total_discussions'];
 }
 
 // Get total ideas shared
-$result = $conn->query("SELECT COUNT(*) as total_ideas FROM posts WHERE post_type = 'idea'");
+// Assuming "ideas" are also non-complaint posts (could refine further if needed)
+$result = $conn->query("SELECT COUNT(*) as total_ideas FROM posts WHERE is_complaint = 0");
 if ($result) {
     $stats['ideas_shared'] = $result->fetch_assoc()['total_ideas'];
 }
 
-// Get total questions answered (we'll simulate this for now)
-$result = $conn->query("SELECT COUNT(*) as total_questions FROM posts WHERE post_type = 'question'");
+// Get total complaints as a stand-in for "questions answered"
+// Since no 'answers' table exists, we'll simulate with complaints
+$result = $conn->query("SELECT COUNT(*) as total_complaints FROM posts WHERE is_complaint = 1");
 if ($result) {
-    // This is a placeholder. A real system would track answers separately.
-    $stats['questions_answered'] = $result->fetch_assoc()['total_questions'];
+    $stats['questions_answered'] = $result->fetch_assoc()['total_complaints'];
 }
 
 echo json_encode(['success' => true, 'stats' => $stats]);

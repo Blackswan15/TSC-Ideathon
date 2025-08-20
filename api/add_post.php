@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $post_content = $data['post_content'];
-$post_type = $data['post_type'] ?? 'discussion';
+$is_complaint = isset($data['is_complaint']) ? (int)$data['is_complaint'] : 0; // default: not a complaint
 $user_id = $_SESSION['user_id'];
 
 if (empty($post_content)) {
@@ -19,11 +19,10 @@ if (empty($post_content)) {
     exit();
 }
 
-$stmt = $conn->prepare("INSERT INTO posts (user_id, post_content, post_type) VALUES (?, ?, ?)");
-$stmt->bind_param("iss", $user_id, $post_content, $post_type);
+$stmt = $conn->prepare("INSERT INTO posts (user_id, post_content, is_complaint, upvotes, downvotes, points_awarded, created_at) VALUES (?, ?, ?, 0, 0, 0, NOW())");
+$stmt->bind_param("isi", $user_id, $post_content, $is_complaint);
 
 if ($stmt->execute()) {
-    // NOTE: Points are no longer awarded on post creation.
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Failed to add post.']);

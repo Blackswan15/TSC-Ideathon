@@ -553,7 +553,7 @@
         }
         
         // --- FETCH AND DISPLAY DASHBOARD STATS ---
-        async function fetchDashboardStats() {
+        async function fetchDashboardStats() { 
             try {
                 const response = await fetch('./api/get_dashboard_stats.php');
                 const data = await response.json();
